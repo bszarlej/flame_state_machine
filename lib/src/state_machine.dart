@@ -3,58 +3,83 @@ import 'state_transition.dart';
 
 class StateMachine<T> {
   State<T>? _currentState;
+  State<T>? _previousState;
   final List<StateTransition<T>> _transitions = [];
 
   State<T>? get currentState => _currentState;
 
   void addTransition(
-    State<T> from,
+    State<T>? from,
     State<T> to,
-    bool Function(T owner) when, {
+    Guard<T> guard, {
     int priority = 1,
     int reversePriority = 1,
     bool reverse = false,
   }) {
-    final transition = StateTransition(
+    final fromState = from ?? AnyState<T>();
+
+    final forwardTransition = StateTransition(
       priority: priority,
-      from: from,
+      from: fromState,
       to: to,
-      when: when,
+      guard: guard,
     );
-    _transitions.add(transition);
+    _addTransition(forwardTransition);
 
     if (reverse) {
       final reverseTransition = StateTransition(
         priority: reversePriority,
         from: to,
-        to: from,
-        when: (owner) => !when(owner),
+        to: fromState,
+        guard: (owner) => !guard(owner),
       );
-      _transitions.add(reverseTransition);
+      _addTransition(reverseTransition);
     }
-    _transitions.sort((a, b) => b.priority.compareTo(a.priority));
+  }
+
+  void popState(T owner) {
+    if (_previousState != null && _previousState != _currentState) {
+      _currentState?.onExit(owner, _previousState);
+      final oldState = _currentState;
+      _currentState = _previousState;
+      _currentState?.onEnter(owner, oldState);
+    }
   }
 
   void setInitialState(State<T> state, T owner) {
-    _currentState = state..onEnter(owner);
+    _currentState = state;
+    _currentState?.onEnter(owner);
   }
 
   void update(double dt, T owner) {
     if (_currentState == null) return;
 
-    final availableTransitions = _transitions.where(
-      (t) => t.from == _currentState,
+    final applicableTransitions = _transitions.where(
+      (t) => t.from == _currentState || t.from is AnyState<T>,
     );
 
-    for (final transition in availableTransitions) {
-      if (transition.when(owner)) {
-        _currentState!.onExit(owner, transition.to);
-        final from = _currentState;
-        _currentState = transition.to..onEnter(owner, from);
-        break;
+    for (final transition in applicableTransitions) {
+      if (transition.to == _currentState || !transition.guard(owner)) continue;
+
+      _currentState!.onExit(owner, transition.to);
+
+      if (transition.to is AnyState<T>) {
+        final oldState = _currentState;
+        _currentState = _previousState?..onEnter(owner, oldState);
+      } else {
+        _previousState = _currentState;
+        _currentState = transition.to..onEnter(owner, _previousState);
       }
+
+      break;
     }
 
     _currentState!.onUpdate(dt, owner);
+  }
+
+  void _addTransition(StateTransition<T> transition) {
+    _transitions
+      ..add(transition)
+      ..sort((a, b) => b.priority.compareTo(a.priority));
   }
 }
