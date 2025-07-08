@@ -7,12 +7,14 @@ void main() {
     late TestOwner owner;
     late StateA stateA;
     late StateB stateB;
+    late StateC stateC;
 
     setUp(() {
       sm = StateMachine<TestOwner>();
       owner = TestOwner();
       stateA = StateA();
       stateB = StateB();
+      stateC = StateC();
     });
 
     test('Initial state set calls onEnter', () {
@@ -49,8 +51,8 @@ void main() {
       // Lower priority transition A->B
       sm.addTransition(stateA, stateB, (o) => o.conditionA, priority: 1);
 
-      // Higher priority transition A->A (loops to itself for test)
-      sm.addTransition(stateA, stateA, (o) => o.conditionB, priority: 2);
+      // Higher priority transition A->C
+      sm.addTransition(stateA, stateC, (o) => o.conditionB, priority: 2);
 
       sm.setInitialState(stateA, owner);
 
@@ -59,12 +61,9 @@ void main() {
 
       sm.update(0.1, owner);
 
-      // Because priority 2 is higher, transition to A should trigger first (a self-transition)
-      expect(sm.currentState, equals(stateA));
-      expect(
-        stateA.entered,
-        isTrue,
-      ); // re-entered because of transition to itself
+      // Because priority 2 is higher, transition to C should trigger first
+      expect(sm.currentState, equals(stateC));
+      expect(stateC.entered, isTrue);
     });
 
     test('Reverse transition works', () {
@@ -102,6 +101,24 @@ class StateA extends State<TestOwner> {
 }
 
 class StateB extends State<TestOwner> {
+  bool entered = false;
+  bool exited = false;
+
+  @override
+  void onEnter(TestOwner owner, [State<TestOwner>? from]) {
+    entered = true;
+  }
+
+  @override
+  void onExit(TestOwner owner, [State<TestOwner>? to]) {
+    exited = true;
+  }
+
+  @override
+  void onUpdate(double dt, TestOwner owner) {}
+}
+
+class StateC extends State<TestOwner> {
   bool entered = false;
   bool exited = false;
 
