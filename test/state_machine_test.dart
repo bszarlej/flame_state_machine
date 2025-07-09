@@ -79,6 +79,17 @@ void main() {
       sm.update(0.1, owner);
       expect(sm.currentState, equals(stateA));
     });
+
+    test('Self transition won\'t trigger', () {
+      sm.setInitialState(stateA, owner);
+      stateA.entered = false;
+
+      sm.addTransition(stateA, stateA, (owner) => owner.conditionA);
+
+      owner.conditionA = true;
+      sm.update(0.1, owner);
+      expect(stateA.entered, isFalse);
+    });
   });
 }
 
