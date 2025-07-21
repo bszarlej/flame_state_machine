@@ -10,25 +10,25 @@ void main() {
     late StateC stateC;
 
     setUp(() {
-      sm = StateMachine<TestOwner>();
       owner = TestOwner();
+      sm = StateMachine<TestOwner>(owner: owner, initialState: null);
       stateA = StateA();
       stateB = StateB();
       stateC = StateC();
     });
 
     test('Initial state set calls onEnter', () {
-      sm.setInitialState(stateA, owner);
+      sm.setState(stateA);
       expect(sm.currentState, equals(stateA));
       expect(stateA.entered, isTrue);
     });
 
     test('Transitions occur based on condition', () {
-      sm.setInitialState(stateA, owner);
-      sm.addTransition(stateA, stateB, (o) => o.conditionA);
+      sm.setState(stateA);
+      sm.register(from: stateA, to: stateB, guard: (o) => o.conditionA);
 
       owner.conditionA = true;
-      sm.update(0.1, owner);
+      sm.update(0.1);
 
       expect(sm.currentState, equals(stateB));
       expect(stateA.exited, isTrue);
@@ -36,11 +36,11 @@ void main() {
     });
 
     test('No transition if condition false', () {
-      sm.addTransition(stateA, stateB, (o) => o.conditionA);
-      sm.setInitialState(stateA, owner);
+      sm.register(from: stateA, to: stateB, guard: (o) => o.conditionA);
+      sm.setState(stateA);
 
       owner.conditionA = false;
-      sm.update(0.1, owner);
+      sm.update(0.1);
 
       expect(sm.currentState, equals(stateA));
       expect(stateA.exited, isFalse);
@@ -49,17 +49,27 @@ void main() {
 
     test('Transitions respect priority', () {
       // Lower priority transition A->B
-      sm.addTransition(stateA, stateB, (o) => o.conditionA, priority: 1);
+      sm.register(
+        from: stateA,
+        to: stateB,
+        guard: (o) => o.conditionA,
+        priority: 1,
+      );
 
       // Higher priority transition A->C
-      sm.addTransition(stateA, stateC, (o) => o.conditionB, priority: 2);
+      sm.register(
+        from: stateA,
+        to: stateC,
+        guard: (o) => o.conditionB,
+        priority: 2,
+      );
 
-      sm.setInitialState(stateA, owner);
+      sm.setState(stateA);
 
       owner.conditionA = true;
       owner.conditionB = true;
 
-      sm.update(0.1, owner);
+      sm.update(0.1);
 
       // Because priority 2 is higher, transition to C should trigger first
       expect(sm.currentState, equals(stateC));
@@ -67,27 +77,32 @@ void main() {
     });
 
     test('Reverse transition works', () {
-      sm.addTransition(stateA, stateB, (o) => o.conditionA, reverse: true);
+      sm.register(
+        from: stateA,
+        to: stateB,
+        guard: (o) => o.conditionA,
+        reverse: true,
+      );
 
-      sm.setInitialState(stateA, owner);
+      sm.setState(stateA);
 
       owner.conditionA = true;
-      sm.update(0.1, owner);
+      sm.update(0.1);
       expect(sm.currentState, equals(stateB));
 
       owner.conditionA = false;
-      sm.update(0.1, owner);
+      sm.update(0.1);
       expect(sm.currentState, equals(stateA));
     });
 
     test('Self transition won\'t trigger', () {
-      sm.setInitialState(stateA, owner);
+      sm.setState(stateA);
       stateA.entered = false;
 
-      sm.addTransition(stateA, stateA, (owner) => owner.conditionA);
+      sm.register(from: stateA, to: stateA, guard: (owner) => owner.conditionA);
 
       owner.conditionA = true;
-      sm.update(0.1, owner);
+      sm.update(0.1);
       expect(stateA.entered, isFalse);
     });
   });
