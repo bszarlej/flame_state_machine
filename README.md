@@ -28,6 +28,11 @@ class IdleState extends State<Enemy> {
   }
 
   @override
+  void onExit(Enemy enemy, [State<Enemy>? to]) {
+    print('Enemy exited Idle state');
+  }
+
+  @override
   void onUpdate(double dt, Enemy enemy) {
     // handle idle behavior
   }
@@ -83,10 +88,10 @@ stateMachine.register(
   priority: 1, // transitions with higher priority values will be checked first
   from: IdleState(), // if not provided the transition can occur from any state
   to: RunningState(),
-  guard: (player) => player.isMoving,
+  guard: (enemy) => enemy.isMoving,
   reverse: true, // automatically registers reverse transition
   reversePriority: 1, // priority for the reverse transition
-  reverseGuard: (player) => !player.isMoving, // guard for the reverse transition (Constructed automatically if not provided)
+  reverseGuard: (enemy) => !enemy.isMoving, // guard for the reverse transition (Constructed automatically if not provided)
 );
 ```
 
@@ -97,7 +102,7 @@ stateMachine.addTransition(
   StateTransition(
     from: IdleState(),
     to: RunningState(),
-    guard: (player) => player.isMoving,
+    guard: (enemy) => enemy.isMoving,
   )
 );
 ```
@@ -110,7 +115,7 @@ stateMachine.addTransition(
   StateTransition(
     from: RunningState(),
     to: IdleState(),
-    guard: (player) => !player.isMoving,
+    guard: (enemy) => !enemy.isMoving,
   )
 );
 ```
