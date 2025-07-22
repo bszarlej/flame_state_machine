@@ -99,8 +99,8 @@ class StateMachine<T> {
 
   /// Sets the current state immediately and calls its [onEnter] method.
   void setState(State<T>? state) {
+    state?.onEnter(_owner, _currentState);
     _currentState = state;
-    _currentState?.onEnter(_owner);
   }
 
   /// Updates the state machine, evaluating transitions and updating the current state.
@@ -117,13 +117,10 @@ class StateMachine<T> {
       _currentState?.onExit(_owner, transition.to);
 
       if (transition.to is AnyState<T>) {
-        final oldState = _currentState;
-        _currentState = _previousState?..onEnter(_owner, oldState);
+        setState(previousState);
       } else {
-        _previousState = _currentState;
-        _currentState = transition.to..onEnter(_owner, _previousState);
+        setState(transition.to);
       }
-
       break;
     }
 
