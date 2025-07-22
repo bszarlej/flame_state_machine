@@ -95,6 +95,29 @@ void main() {
       expect(sm.currentState, equals(stateA));
     });
 
+    test('Global reverse transition returns to previous state', () {
+      sm.register(
+        to: stateC,
+        guard: (owner) => owner.conditionB,
+        reverse: true,
+      );
+
+      sm.setState(stateA);
+      owner.conditionB = true;
+
+      sm.update(0.1);
+
+      expect(sm.currentState, equals(stateC));
+      expect(stateC.entered, isTrue);
+
+      owner.conditionB = false;
+
+      sm.update(0.1);
+
+      expect(sm.currentState, equals(stateA));
+      expect(stateA.entered, isTrue);
+    });
+
     test('Self transition won\'t trigger', () {
       sm.setState(stateA);
       stateA.entered = false;
