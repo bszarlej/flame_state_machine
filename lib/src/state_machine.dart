@@ -101,6 +101,7 @@ class StateMachine<T> {
   void setState(State<T>? state) {
     if (state == _currentState) return;
     state?.onEnter(_owner, _currentState);
+    _previousState = _currentState;
     _currentState = state;
   }
 
