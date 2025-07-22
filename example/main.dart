@@ -94,3 +94,5 @@ class PatrolState extends State<Enemy> {
     }
   }
 }
+
+//ignore_for_file: avoid_print
