@@ -115,8 +115,11 @@ class StateMachine<T> {
 
     for (final transition in applicableTransitions) {
       if (transition.to == _currentState || !transition.guard(_owner)) continue;
-      _currentState?.onExit(_owner, transition.to);
-      setState(transition.to is AnyState<T> ? previousState : transition.to);
+      final toState = transition.to is AnyState<T>
+          ? previousState
+          : transition.to;
+      _currentState?.onExit(_owner, toState);
+      setState(toState);
       break;
     }
 
