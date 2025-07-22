@@ -4,10 +4,11 @@ A lightweight and flexible **finite state machine** package for the [Flame](http
 
 Manage complex stateful behaviors for your Flame `Component`s with ease, enabling clean and maintainable game logic.
 
-<a title="Pub" href="https://pub.dev/packages/flame_state_machine" ><img src="https://img.shields.io/pub/v/flame_state_machine.svg?style=popout" /></a>
-<a title="Pub Points" href="https://pub.dev/packages/flame_state_machine/score" ><img src="https://img.shields.io/pub/points/flame_state_machine.svg?style=popout" /></a>
-<a title="Pub Likes" href="https://pub.dev/packages/flame_state_machine/score" ><img src="https://img.shields.io/pub/likes/flame_state_machine.svg?style=popout" /></a>
-<a title="Pub Downloads" href="https://pub.dev/packages/flame_state_machine/score" ><img src="https://img.shields.io/pub/dm/flame_state_machine" /></a>
+<a title="CI" href="https://github.com/bszarlej/flame_state_machine/actions/workflows/ci.yaml"><img src="https://github.com/bszarlej/flame_state_machine/actions/workflows/ci.yaml/badge.svg"></a>
+<a title="Pub" href="https://pub.dev/packages/flame_state_machine" ><img src="https://img.shields.io/pub/v/flame_state_machine.svg?style=popout"></a>
+<a title="Pub Points" href="https://pub.dev/packages/flame_state_machine/score"><img src="https://img.shields.io/pub/points/flame_state_machine.svg?style=popout"></a>
+<a title="Pub Likes" href="https://pub.dev/packages/flame_state_machine/score"><img src="https://img.shields.io/pub/likes/flame_state_machine.svg?style=popout"></a>
+<a title="Pub Downloads" href="https://pub.dev/packages/flame_state_machine/score" ><img src="https://img.shields.io/pub/dm/flame_state_machine"></a>
 
 ## Features
 
