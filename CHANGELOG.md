@@ -1,3 +1,7 @@
+## 1.0.4
+
+* Fixed: incorrect state parameter was being passed to the `onExit()` callback.
+
 ## 1.0.3
 
 * Added state check in `setState` to avoid redundant updates.
