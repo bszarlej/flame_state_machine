@@ -1,6 +1,6 @@
 name: flame_state_machine
 description: A lightweight, type-safe state machine for the Flame game engine, enabling modular and reusable behavior for Flame components.
-version: 1.0.2
+version: 1.0.3
 repository: https://github.com/bszarlej/flame_state_machine
 
 environment:
