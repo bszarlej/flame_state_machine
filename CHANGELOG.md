@@ -1,3 +1,9 @@
+## 1.0.2
+
+* Refactored internal state transition logic for clarity and reuse (no functional changes).
+* Replaced inline state updates with `setState` calls in the `StateMachine` class.
+* Added status badges to `README.md` for better project visibility.
+
 ## 1.0.1
 
 * Added example
