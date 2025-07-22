@@ -1,15 +1,17 @@
 name: CI
+
 on:
   push:
-    branches:
-      - '*'
+    branches-ignore:
+      - 'chore/**'
   pull_request:
-    branches:
-      - '*'
+    branches-ignore:
+      - 'chore/**'
   workflow_call:
 
 jobs:
   test:
+    if: "!contains(github.event.head_commit.message, 'chore:')"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
