@@ -29,6 +29,11 @@ import 'state_transition.dart';
 /// - If `from` is `null` in `register()`, the transition applies from *any* state.
 /// - The state lifecycle methods ([onEnter], [onExit], [onUpdate]) are called accordingly.
 class StateMachine<T> {
+  /// A function that is called whenever a state transition occurs.
+  /// It receives the [owner], the previous state ([from]), and the new state ([to]).
+  /// This can be used for logging, analytics, or triggering side effects.
+  void Function(T owner, State<T>? from, State<T>? to)? onTransition;
+
   late T _owner;
   State<T>? _currentState;
   State<T>? _previousState;
@@ -37,7 +42,7 @@ class StateMachine<T> {
   /// Creates a [StateMachine] for the given [owner] and optional [initialState].
   ///
   /// The [initialState], if provided, will be entered immediately.
-  StateMachine({required T owner, State<T>? initialState}) {
+  StateMachine({required T owner, State<T>? initialState, this.onTransition}) {
     _owner = owner;
     setState(initialState);
   }
@@ -100,6 +105,7 @@ class StateMachine<T> {
   /// Sets the current state immediately and calls its [onEnter] method.
   void setState(State<T>? state) {
     if (state == _currentState) return;
+    onTransition?.call(_owner, _currentState, state);
     state?.onEnter(_owner, _currentState);
     _previousState = _currentState;
     _currentState = state;
