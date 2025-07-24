@@ -1,3 +1,9 @@
+## 1.0.5
+
+* Added GitHub Actions CI badge to `README.md`.
+* Added `topics` and `issue_tracker` fields to `pubspec.yaml` for improved pub.dev metadata.
+* Supressed Linter warning `avoid_print` inside the example.
+
 ## 1.0.4
 
 * Fixed: incorrect state parameter was being passed to the `onExit()` callback.
