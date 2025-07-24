@@ -1,3 +1,7 @@
+## 1.1.0
+
+* Added `onTransition()` callback to `StateMachine` that triggers whenever a state change occurs
+
 ## 1.0.5
 
 * Added GitHub Actions CI badge to `README.md`.
