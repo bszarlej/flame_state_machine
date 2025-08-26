@@ -1,3 +1,8 @@
+## 2.0.0
+
+* Make `StateMachine` a Flame `Component` to leverage Flame's lifecycle.
+* Removed `HasStates` mixin. It's no longer needed since now update and render methods are managed by Flame.
+
 ## 1.2.0
 
 * Added `onRender` callback to `State`, allowing state-specific rendering logic to be executed each frame. ([b2a95f9](https://github.com/bszarlej/flame_state_machine/commit/b2a95f967bc0c3ebd3d8c4c8a28488710e34112c))
