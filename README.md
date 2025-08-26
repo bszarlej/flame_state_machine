@@ -38,7 +38,7 @@ class IdleState extends State<Enemy> {
   }
 
   @override
-  void onRender(Enemy owner, Canvas canvas) {
+  void onRender(Canvas canvas, Enemy enemy) {
     // optionally render idle-specific visuals here (useful for debugging)
   }
 
@@ -51,7 +51,7 @@ class IdleState extends State<Enemy> {
 
 ### 2. Setup state machine in your Flame component
 
-add a `StateMachine` instance to your component
+Since `StateMachine` is a Flame `Component` you can add it directly via the `add` method of your component
 ```dart
 class Enemy extends PositionComponent {
 
@@ -87,8 +87,6 @@ class Enemy extends PositionComponent {
   }
 }
 ```
-
-### 3. Register transitions with guards
 
 Use `register()` to define valid state changes and their conditions:
 
