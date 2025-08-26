@@ -15,7 +15,7 @@ Manage complex stateful behaviors for your Flame `Component`s with ease, enablin
 - Generic state machine designed to work seamlessly with Flame `Component`s
 - Supports prioritized state transitions with custom guard conditions
 - Easy registration of reversible transitions
-- Lifecycle callbacks for entering, exiting, and updating states
+- Lifecycle callbacks for entering, exiting, rendering and updating states
 - `AnyState` support for transitions valid from any current state
 
 
@@ -38,6 +38,11 @@ class IdleState extends State<Enemy> {
   }
 
   @override
+  void onRender(Enemy owner, Canvas canvas) {
+    // optionally render idle-specific visuals here (useful for debugging)
+  }
+
+  @override
   void onUpdate(double dt, Enemy enemy) {
     // handle idle behavior
   }
@@ -50,6 +55,7 @@ Mix in `HasStates` and provide a `StateMachine` instance:
 
 ```dart
 class Enemy extends PositionComponent with HasStates<Enemy> {
+  @override
   late final StateMachine<Enemy> stateMachine;
 
   Enemy() {
@@ -77,9 +83,15 @@ class Enemy extends PositionComponent with HasStates<Enemy> {
   }
 
   @override
+  void render(Canvas canvas) {
+    super.render(canvas);
+    // stateMachine.render(canvas); // called automatically by HasStates mixin
+  }
+
+  @override
   void update(double dt) {
     super.update(dt);
-    // stateMachine.update(dt);  // called automatically by HasStates
+    // stateMachine.update(dt);  // called automatically by HasStates mixin
   }
 }
 ```
@@ -128,7 +140,7 @@ stateMachine.addTransition(
 ## API
 
 - `StateMachine<T>` — Core FSM logic
-- `State<T>` — Base class for your states (override `onEnter`, `onExit`, `onUpdate`)
+- `State<T>` — Base class for your states (override `onEnter`, `onExit`, `onRender`, `onUpdate`)
 - `StateTransition<T>` — Defines transitions between states with guards and priorities
 - `HasStates<T extends Component>` — Mixin for Flame components to attach a state machine
 

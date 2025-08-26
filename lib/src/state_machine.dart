@@ -1,3 +1,5 @@
+import 'package:flame/extensions.dart';
+
 import 'state.dart';
 import 'state_transition.dart';
 
@@ -8,26 +10,29 @@ import 'state_transition.dart';
 ///
 /// Usage:
 /// ```dart
-/// final machine = StateMachine<Player>(
+/// final stateMachine = StateMachine<Player>(
 ///   owner: player,
 ///   initialState: IdleState(),
 /// );
 ///
-/// machine.register(
+/// stateMachine.register(
 ///   from: IdleState(),
 ///   to: RunningState(),
 ///   guard: (player) => player.isMoving,
 /// );
 ///
 /// // In your game loop:
-/// machine.update(dt);
+/// stateMachine.update(dt);
+///
+/// // In your render method:
+/// stateMachine.render(canvas);
 /// ```
 ///
 /// - The owner is the object controlled by this state machine (e.g., a Flame component).
 /// - Transitions can be registered with optional priorities and reversible guards.
 /// - Transitions with higher priority are evaluated first.
 /// - If `from` is `null` in `register()`, the transition applies from *any* state.
-/// - The state lifecycle methods ([onEnter], [onExit], [onUpdate]) are called accordingly.
+/// - The state lifecycle methods ([onEnter], [onExit], [onRender], [onUpdate]) are called accordingly.
 class StateMachine<T> {
   /// A function that is called whenever a state transition occurs.
   /// It receives the [owner], the previous state ([from]), and the new state ([to]).
@@ -100,6 +105,12 @@ class StateMachine<T> {
       );
       addTransition(reverseTransition);
     }
+  }
+
+  /// Renders the current state's visuals onto the provided [canvas]
+  /// by calling its [onRender] method.
+  void render(Canvas canvas) {
+    _currentState?.onRender(_owner, canvas);
   }
 
   /// Sets the current state immediately and calls its [onEnter] method.

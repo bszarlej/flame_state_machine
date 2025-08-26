@@ -1,3 +1,5 @@
+import 'package:flame/extensions.dart';
+
 /// A wildcard state that matches any other state.
 ///
 /// Used internally by the [StateMachine] to allow transitions
@@ -13,6 +15,7 @@ final class AnyState<T> extends State<T> {
 /// Subclasses should override lifecycle methods to define behavior:
 /// - [onEnter]: called when entering this state.
 /// - [onExit]: called when exiting this state.
+/// - [onRender]: called every render tick while in this state.
 /// - [onUpdate]: called every update tick while in this state.
 ///
 /// The type parameter [T] represents the owner object that the state controls,
@@ -31,6 +34,15 @@ abstract class State<T> {
   /// [owner] is the state machine's owner.
   /// [to] is the next state (if any).
   void onExit(T owner, [State<T>? to]) {}
+
+  /// Called on every render tick while this state is active.
+  ///
+  /// Use this method to draw state-specific visuals, such as
+  /// debug overlays that are tied to the state.
+  ///
+  /// [owner] is the component or object that owns this state machine.
+  /// [canvas] is the canvas to draw on.
+  void onRender(T owner, Canvas canvas) {}
 
   /// Called on every update tick while this state is active.
   ///

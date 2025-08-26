@@ -60,6 +60,11 @@ class IdleState extends State<Enemy> {
   }
 
   @override
+  void onRender(Enemy owner, Canvas canvas) {
+    // Optionally draw idle-specific visuals here
+  }
+
+  @override
   void onUpdate(double dt, Enemy owner) {
     _timer += dt;
     if (_timer >= _idleDuration) {
@@ -80,6 +85,11 @@ class PatrolState extends State<Enemy> {
   @override
   void onExit(Enemy owner, [State<Enemy>? to]) {
     print('Enemy exited Patrol state');
+  }
+
+  @override
+  onRender(Enemy owner, Canvas canvas) {
+    // Optionally draw patrol-specific visuals here
   }
 
   @override
