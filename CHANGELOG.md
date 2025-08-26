@@ -1,3 +1,7 @@
+## 2.0.1
+
+* Fix Documentation
+
 ## 2.0.0
 
 * Make `StateMachine` a Flame `Component` to leverage Flame's lifecycle.

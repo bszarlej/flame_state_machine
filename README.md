@@ -51,8 +51,7 @@ class IdleState extends State<Enemy> {
 
 ### 2. Setup state machine in your Flame component
 
-Mix in `HasStates` and provide a `StateMachine` instance:
-
+add a `StateMachine` instance to your component
 ```dart
 class Enemy extends PositionComponent {
 
