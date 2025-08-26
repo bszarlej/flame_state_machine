@@ -1,3 +1,7 @@
+## 1.2.0
+
+* Added `onRender` callback to `State`, allowing state-specific rendering logic to be executed each frame. ([b2a95f9](https://github.com/bszarlej/flame_state_machine/commit/b2a95f967bc0c3ebd3d8c4c8a28488710e34112c))
+
 ## 1.1.0
 
 * Added `onTransition()` callback to `StateMachine` that triggers whenever a state change occurs
