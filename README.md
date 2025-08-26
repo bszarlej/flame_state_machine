@@ -16,7 +16,7 @@ Manage complex stateful behaviors for your Flame `Component`s with ease, enablin
 - Supports prioritized state transitions with custom guard conditions
 - Easy registration of reversible transitions
 - Lifecycle callbacks for entering, exiting, rendering and updating states
-- `AnyState` support for transitions valid from any current state
+- Support for transitions that can occur from any state
 
 
 ## Usage
@@ -54,20 +54,22 @@ class IdleState extends State<Enemy> {
 Mix in `HasStates` and provide a `StateMachine` instance:
 
 ```dart
-class Enemy extends PositionComponent with HasStates<Enemy> {
-  @override
-  late final StateMachine<Enemy> stateMachine;
+class Enemy extends PositionComponent {
 
-  Enemy() {
+  @override
+  Future<void> onLoad() async {
+    await super.onLoad();
+
     final idleState = IdleState();
     final runningState = RunningState();
     final deathState = DeathState();
 
-    stateMachine = StateMachine<Enemy>(
+    final stateMachine = StateMachine<Enemy>(
       owner: this,
       initialState: idleState,
     );
 
+    // transition from any state with a high priority
     stateMachine.register(
       to: deathState,
       guard: (enemy) => !enemy.isAlive,
@@ -80,18 +82,9 @@ class Enemy extends PositionComponent with HasStates<Enemy> {
       guard: (enemy) => enemy.isMoving,
       reverse: true,
     );
-  }
 
-  @override
-  void render(Canvas canvas) {
-    super.render(canvas);
-    // stateMachine.render(canvas); // called automatically by HasStates mixin
-  }
-
-  @override
-  void update(double dt) {
-    super.update(dt);
-    // stateMachine.update(dt);  // called automatically by HasStates mixin
+    // add the state machine as a child component
+    add(stateMachine);
   }
 }
 ```
@@ -124,25 +117,11 @@ stateMachine.addTransition(
 );
 ```
 
->[!NOTE]
-> If you use `addTransition()`, you must define the reverse transition yourself, like so:
-
-```dart
-stateMachine.addTransition(
-  StateTransition(
-    from: RunningState(),
-    to: IdleState(),
-    guard: (enemy) => !enemy.isMoving,
-  )
-);
-```
-
 ## API
 
-- `StateMachine<T>` — Core FSM logic
+- `StateMachine<T>` — Core FSM logic, implemented as a Flame `Component`
 - `State<T>` — Base class for your states (override `onEnter`, `onExit`, `onRender`, `onUpdate`)
 - `StateTransition<T>` — Defines transitions between states with guards and priorities
-- `HasStates<T extends Component>` — Mixin for Flame components to attach a state machine
 
 
 ## Contributing
