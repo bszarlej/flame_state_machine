@@ -1,3 +1,4 @@
+import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 
 import 'state.dart';
@@ -5,8 +6,10 @@ import 'state_transition.dart';
 
 /// A generic finite state machine for managing [State] transitions.
 ///
-/// The [StateMachine] maintains the current and previous states of an owner object of type [T].
-/// It allows registering transitions between states guarded by conditions.
+/// The [StateMachine] is a [Component], meaning it can be added to a Flame
+/// component tree and its [update] and [render] methods will be called automatically
+/// by the game loop. It maintains the current and previous states of an owner object
+/// of type [T] and allows registering transitions between states guarded by conditions.
 ///
 /// Usage:
 /// ```dart
@@ -21,19 +24,17 @@ import 'state_transition.dart';
 ///   guard: (player) => player.isMoving,
 /// );
 ///
-/// // In your game loop:
-/// stateMachine.update(dt);
-///
-/// // In your render method:
-/// stateMachine.render(canvas);
+/// // Add the state machine to the component tree:
+/// add(stateMachine);
 /// ```
 ///
+/// Key points:
 /// - The owner is the object controlled by this state machine (e.g., a Flame component).
 /// - Transitions can be registered with optional priorities and reversible guards.
 /// - Transitions with higher priority are evaluated first.
-/// - If `from` is `null` in `register()`, the transition applies from *any* state.
-/// - The state lifecycle methods ([onEnter], [onExit], [onRender], [onUpdate]) are called accordingly.
-class StateMachine<T> {
+/// - If `from` is `null` in [register], the transition applies from *any* state.
+/// - State lifecycle methods ([onEnter], [onExit], [onRender], [onUpdate]) are called appropriately.
+class StateMachine<T> extends Component {
   /// A function that is called whenever a state transition occurs.
   /// It receives the [owner], the previous state ([from]), and the new state ([to]).
   /// This can be used for logging, analytics, or triggering side effects.
@@ -109,8 +110,10 @@ class StateMachine<T> {
 
   /// Renders the current state's visuals onto the provided [canvas]
   /// by calling its [onRender] method.
+  @override
   void render(Canvas canvas) {
-    _currentState?.onRender(_owner, canvas);
+    super.render(canvas);
+    currentState?.onRender(_owner, canvas);
   }
 
   /// Sets the current state immediately and calls its [onEnter] method.
@@ -123,9 +126,10 @@ class StateMachine<T> {
   }
 
   /// Updates the state machine, evaluating transitions and updating the current state.
-  ///
-  /// This should be called once per frame with the elapsed [dt].
+  @override
   void update(double dt) {
+    super.update(dt);
+
     final applicableTransitions = _transitions.where(
       (t) => t.from == _currentState || t.from is AnyState<T>,
     );

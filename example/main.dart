@@ -9,10 +9,7 @@ void main() {
   runApp(GameWidget(game: FlameStateMachineExampleGame()));
 }
 
-class Enemy extends RectangleComponent with HasStates<Enemy> {
-  @override
-  late final StateMachine<Enemy> stateMachine;
-
+class Enemy extends RectangleComponent {
   bool isPatrolling = false;
 
   @override
@@ -22,13 +19,18 @@ class Enemy extends RectangleComponent with HasStates<Enemy> {
     final idleState = IdleState();
     final patrolState = PatrolState();
 
-    stateMachine = StateMachine<Enemy>(owner: this, initialState: idleState);
+    final stateMachine = StateMachine<Enemy>(
+      owner: this,
+      initialState: idleState,
+    );
     stateMachine.register(
       from: idleState,
       to: patrolState,
       guard: (owner) => isPatrolling,
       reverse: true,
     );
+
+    add(stateMachine);
   }
 }
 
