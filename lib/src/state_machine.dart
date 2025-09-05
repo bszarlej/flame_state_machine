@@ -117,9 +117,11 @@ class StateMachine<T> extends Component {
   }
 
   /// Sets the current state immediately and calls its [onEnter] method.
+  /// Calls [onExit] on the previous state if applicable.
   void setState(State<T>? state) {
     if (state == _currentState) return;
     onTransition?.call(_owner, _currentState, state);
+    _currentState?.onExit(_owner, state);
     state?.onEnter(_owner, _currentState);
     _previousState = _currentState;
     _currentState = state;
