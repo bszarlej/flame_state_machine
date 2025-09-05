@@ -1,3 +1,7 @@
+## 2.0.3
+
+* **FIX**: added onExit call during setState. ([#6](https://github.com/bszarlej/flame_state_machine/pull/6))
+
 ## 2.0.2
 
 * Updated Documentation
