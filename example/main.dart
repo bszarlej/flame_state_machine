@@ -23,11 +23,21 @@ class Enemy extends RectangleComponent {
       owner: this,
       initialState: idleState,
     );
-    stateMachine.register(
-      from: idleState,
-      to: patrolState,
-      guard: (owner) => isPatrolling,
-      reverse: true,
+    stateMachine.addTransition(
+      StateTransition<Enemy>(
+        priority: 1,
+        from: idleState,
+        to: patrolState,
+        guard: (owner) => isPatrolling,
+      ),
+    );
+    stateMachine.addTransition(
+      StateTransition<Enemy>(
+        priority: 1,
+        from: patrolState,
+        to: idleState,
+        guard: (owner) => !isPatrolling,
+      ),
     );
 
     add(stateMachine);
