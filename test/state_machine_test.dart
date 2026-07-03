@@ -1,5 +1,4 @@
 import 'package:flame_state_machine/flame_state_machine.dart';
-import 'package:flame_state_machine/src/state_match.dart';
 import 'package:test/test.dart';
 
 void main() {
