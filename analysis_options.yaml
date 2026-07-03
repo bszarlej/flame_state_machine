@@ -1,7 +1,21 @@
+analyzer:
+  errors:
+    invalid_annotation_target: ignore
 include: package:flutter_lints/flutter.yaml
 
 linter:
   rules:
-    - prefer_relative_imports
-    - prefer_const_constructors
-    - prefer_single_quotes
+    prefer_single_quotes: true
+    always_use_package_imports: true
+    prefer_const_constructors: true
+    prefer_const_declarations: true
+    avoid_unnecessary_containers: true
+    avoid_print: true
+    avoid_returning_null_for_void: true
+    unnecessary_null_checks: true
+    prefer_final_fields: true
+    prefer_final_locals: true
+    directives_ordering: true
+    sort_constructors_first: true
+    use_key_in_widget_constructors: true
+    unawaited_futures: true

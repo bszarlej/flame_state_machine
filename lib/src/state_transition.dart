@@ -1,4 +1,4 @@
-import 'state.dart';
+import 'package:flame_state_machine/src/state.dart';
 
 /// A guard function that determines whether a transition should occur.
 ///
@@ -14,6 +14,18 @@ typedef Guard<T> = bool Function(T owner);
 /// - [to]: The target state (required).
 /// - [guard]: A function that returns `true` when the transition can be triggered (required).
 class StateTransition<T> {
+  /// Creates a [StateTransition].
+  ///
+  /// [to] and [guard] are required.
+  /// If [from] is omitted, it defaults to [AnyState].
+  /// [priority] defaults to 1.
+  StateTransition({
+    this.priority = 1,
+    this.from = const AnyState(),
+    required this.to,
+    required this.guard,
+  });
+
   /// The priority of this transition, higher values are checked before lower.
   final int priority;
 
@@ -27,16 +39,4 @@ class StateTransition<T> {
 
   /// The guard function that decides if this transition should trigger.
   final Guard<T> guard;
-
-  /// Creates a [StateTransition].
-  ///
-  /// [to] and [guard] are required.
-  /// If [from] is omitted, it defaults to [AnyState].
-  /// [priority] defaults to 1.
-  StateTransition({
-    this.priority = 1,
-    this.from = const AnyState(),
-    required this.to,
-    required this.guard,
-  });
 }
