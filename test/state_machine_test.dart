@@ -24,7 +24,11 @@ void main() {
 
     test('Transitions occur based on condition', () {
       sm.addTransition(
-        StateTransition(from: stateA, to: stateB, guard: (o) => o.conditionA),
+        StateTransition(
+          match: StateMatch.exact(stateA),
+          to: stateB,
+          guard: (o) => o.conditionA,
+        ),
       );
 
       owner.conditionA = true;
@@ -37,7 +41,11 @@ void main() {
 
     test('No transition if condition false', () {
       sm.addTransition(
-        StateTransition(from: stateA, to: stateB, guard: (o) => o.conditionA),
+        StateTransition(
+          match: StateMatch.exact(stateA),
+          to: stateB,
+          guard: (o) => o.conditionA,
+        ),
       );
 
       owner.conditionA = false;
@@ -52,7 +60,7 @@ void main() {
       // Lower priority transition A->B
       sm.addTransition(
         StateTransition(
-          from: stateA,
+          match: StateMatch.exact(stateA),
           to: stateB,
           guard: (o) => o.conditionA,
           priority: 1,
@@ -62,7 +70,7 @@ void main() {
       // Higher priority transition A->C
       sm.addTransition(
         StateTransition(
-          from: stateA,
+          match: StateMatch.exact(stateA),
           to: stateC,
           guard: (o) => o.conditionB,
           priority: 2,
@@ -84,7 +92,7 @@ void main() {
 
       sm.addTransition(
         StateTransition(
-          from: stateA,
+          match: StateMatch.exact(stateA),
           to: stateA,
           guard: (owner) => owner.conditionA,
         ),

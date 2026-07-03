@@ -18,27 +18,36 @@ class Enemy extends RectangleComponent {
 
     final idleState = IdleState();
     final patrolState = PatrolState();
+    final deathState = DeathState();
 
     final stateMachine = StateMachine<Enemy>(
       owner: this,
       initialState: idleState,
     );
-    stateMachine.addTransition(
-      StateTransition<Enemy>(
-        priority: 1,
-        from: idleState,
-        to: patrolState,
-        guard: (owner) => isPatrolling,
-      ),
-    );
-    stateMachine.addTransition(
-      StateTransition<Enemy>(
-        priority: 1,
-        from: patrolState,
-        to: idleState,
-        guard: (owner) => !isPatrolling,
-      ),
-    );
+    stateMachine
+      ..addTransition(
+        StateTransition<Enemy>(
+          priority: 1,
+          match: StateMatch.exact(idleState),
+          to: patrolState,
+          guard: (owner) => isPatrolling,
+        ),
+      )
+      ..addTransition(
+        StateTransition<Enemy>(
+          priority: 1,
+          match: StateMatch.exact(patrolState),
+          to: idleState,
+          guard: (owner) => !isPatrolling,
+        ),
+      )
+      ..addTransition(
+        StateTransition<Enemy>.global(
+          priority: 1,
+          to: deathState,
+          guard: (owner) => !isPatrolling,
+        ),
+      );
 
     add(stateMachine);
   }
@@ -114,6 +123,29 @@ class PatrolState extends State<Enemy> {
       _patrolDirection.x *= -1; // Reverse direction
       owner.isPatrolling = false;
     }
+  }
+}
+
+class DeathState extends State<Enemy> {
+  @override
+  void onEnter(Enemy owner, [State<Enemy>? from]) {
+    print('Enemy entered Death state');
+    // Optionally perform death animation or logic here
+  }
+
+  @override
+  void onExit(Enemy owner, [State<Enemy>? to]) {
+    print('Enemy exited Death state');
+  }
+
+  @override
+  void onRender(Enemy owner, Canvas canvas) {
+    // Optionally draw death-specific visuals here
+  }
+
+  @override
+  void onUpdate(double dt, Enemy owner) {
+    // Optionally handle death logic here
   }
 }
 
