@@ -1,8 +1,7 @@
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
-
-import 'state.dart';
-import 'state_transition.dart';
+import 'package:flame_state_machine/src/state.dart';
+import 'package:flame_state_machine/src/state_transition.dart';
 
 /// A generic finite state machine for managing [State] transitions.
 ///
@@ -35,6 +34,14 @@ import 'state_transition.dart';
 /// - If `from` is `null` in [register], the transition applies from *any* state.
 /// - State lifecycle methods ([onEnter], [onExit], [onRender], [onUpdate]) are called appropriately.
 class StateMachine<T> extends Component {
+  /// Creates a [StateMachine] for the given [owner] and optional [initialState].
+  ///
+  /// The [initialState], if provided, will be entered immediately.
+  StateMachine({required T owner, State<T>? initialState, this.onTransition}) {
+    _owner = owner;
+    setState(initialState);
+  }
+
   /// A function that is called whenever a state transition occurs.
   /// It receives the [owner], the previous state ([from]), and the new state ([to]).
   /// This can be used for logging, analytics, or triggering side effects.
@@ -44,14 +51,6 @@ class StateMachine<T> extends Component {
   State<T>? _currentState;
   State<T>? _previousState;
   final List<StateTransition<T>> _transitions = [];
-
-  /// Creates a [StateMachine] for the given [owner] and optional [initialState].
-  ///
-  /// The [initialState], if provided, will be entered immediately.
-  StateMachine({required T owner, State<T>? initialState, this.onTransition}) {
-    _owner = owner;
-    setState(initialState);
-  }
 
   /// The current active state.
   State<T>? get currentState => _currentState;
