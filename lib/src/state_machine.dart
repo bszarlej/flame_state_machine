@@ -132,7 +132,7 @@ class StateMachine<T> extends Component {
     super.update(dt);
 
     final applicableTransitions = _transitions.where(
-      (t) => t.from == null || identical(t.from, _currentState),
+      (t) => t.match.matches(_currentState),
     );
 
     for (final transition in applicableTransitions) {
