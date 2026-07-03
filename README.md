@@ -12,10 +12,10 @@ Manage complex stateful behaviors for your Flame `Component`s with ease, enablin
 
 ## Features
 
-- Generic state machine designed to work seamlessly with Flame `Component`s
 - Supports prioritized state transitions with custom guard conditions
-- Lifecycle callbacks for entering, exiting, rendering and updating states
-- Support for transitions that can occur from any state
+- Flexible state matching using `StateMatch`
+- Lifecycle callbacks for entering, exiting, rendering, and updating states
+- Global transitions that can trigger from any state
 
 
 ## Usage
@@ -27,12 +27,12 @@ Extend the `State<T>` class to define your custom states:
 ```dart
 class IdleState extends State<Enemy> {
   @override
-  void onEnter(Enemy enemy, [State<Enemy>? from]) {
+  void onEnter(Enemy enemy, State<Enemy>? from) {
     print('Enemy entered Idle state');
   }
 
   @override
-  void onExit(Enemy enemy, [State<Enemy>? to]) {
+  void onExit(Enemy enemy, State<Enemy> to) {
     print('Enemy exited Idle state');
   }
 
@@ -89,6 +89,49 @@ class Enemy extends PositionComponent {
     add(stateMachine);
   }
 }
+```
+
+### State matching
+
+`StateTransition` uses `StateMatch` to determine when a transition is applicable.
+
+Match a specific state instance:
+
+```dart
+StateTransition(
+  match: StateMatch.exact(idleState),
+  to: runningState,
+  guard: (enemy) => enemy.isMoving,
+);
+```
+
+Match any state of a given type:
+
+```dart
+StateTransition(
+  match: StateMatch.type<Enemy, IdleState>(),
+  to: runningState,
+  guard: (enemy) => enemy.isMoving,
+);
+```
+
+Or create a transition that can occur from any state using:
+
+```dart
+StateTransition.global(
+  to: deathState,
+  guard: (enemy) => !enemy.isAlive,
+);
+```
+
+or:
+
+```dart
+StateTransition(
+  match: StateMatch.any(),
+  to: deathState,
+  guard: (enemy) => !enemy.isAlive,
+);
 ```
 
 ## API
