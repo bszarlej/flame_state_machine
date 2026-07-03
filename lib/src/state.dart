@@ -1,15 +1,5 @@
 import 'package:flame/extensions.dart';
 
-/// A wildcard state that matches any other state.
-///
-/// Used internally by the [StateMachine] to allow transitions
-/// from or to any state when registering transitions.
-///
-/// Typically used as the default `from` state in [StateTransition].
-final class AnyState<T> extends State<T> {
-  const AnyState();
-}
-
 /// Represents a generic state for use in a [StateMachine].
 ///
 /// Subclasses should override lifecycle methods to define behavior:
@@ -27,13 +17,13 @@ abstract class State<T> {
   ///
   /// [owner] is the state machine's owner.
   /// [from] is the previous state (if any).
-  void onEnter(T owner, [State<T>? from]) {}
+  void onEnter(T owner, State<T>? from) {}
 
   /// Called when this state is exited.
   ///
   /// [owner] is the state machine's owner.
   /// [to] is the next state (if any).
-  void onExit(T owner, [State<T>? to]) {}
+  void onExit(T owner, State<T> to) {}
 
   /// Called on every render tick while this state is active.
   ///

@@ -14,7 +14,6 @@ Manage complex stateful behaviors for your Flame `Component`s with ease, enablin
 
 - Generic state machine designed to work seamlessly with Flame `Component`s
 - Supports prioritized state transitions with custom guard conditions
-- Easy registration of reversible transitions
 - Lifecycle callbacks for entering, exiting, rendering and updating states
 - Support for transitions that can occur from any state
 
@@ -51,7 +50,8 @@ class IdleState extends State<Enemy> {
 
 ### 2. Setup state machine in your Flame component
 
-Since `StateMachine` is a Flame `Component` you can add it directly via the `add` method of your component
+Since `StateMachine` is a Flame `Component` all you have to do is add it directly via the `add` method of your component
+and it will automatically handle the state transitions and update the current state.
 ```dart
 class Enemy extends PositionComponent {
 
@@ -69,49 +69,26 @@ class Enemy extends PositionComponent {
     );
 
     // transition from any state with a high priority
-    stateMachine.register(
-      to: deathState,
-      guard: (enemy) => !enemy.isAlive,
-      priority: 100,
+    stateMachine.addTransition(
+      StateTransition.globlal(
+        to: deathState,
+        guard: (enemy) => !enemy.isAlive,
+        priority: 100,
+      )
     );
 
-    stateMachine.register(
-      from: idleState,
-      to: runningState,
-      guard: (enemy) => enemy.isMoving,
-      reverse: true,
+    stateMachine.addTransition(
+      StateTransition(
+        from: idleState,
+        to: runningState,
+        guard: (enemy) => enemy.isMoving,
+      )
     );
 
     // add the state machine as a child component
     add(stateMachine);
   }
 }
-```
-
-Use `register()` to define valid state changes and their conditions:
-
-```dart
-stateMachine.register(
-  priority: 1, // transitions with higher priority values will be checked first
-  from: IdleState(), // if not provided the transition can occur from any state
-  to: RunningState(),
-  guard: (enemy) => enemy.isMoving,
-  reverse: true, // automatically registers reverse transition
-  reversePriority: 1, // priority for the reverse transition
-  reverseGuard: (enemy) => !enemy.isMoving, // guard for the reverse transition (Constructed automatically if not provided)
-);
-```
-
-Or use `addTransition()` to add a `StateTransition` Object manually:
-
-```dart
-stateMachine.addTransition(
-  StateTransition(
-    from: IdleState(),
-    to: RunningState(),
-    guard: (enemy) => enemy.isMoving,
-  )
-);
 ```
 
 ## API
