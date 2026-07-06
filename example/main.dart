@@ -42,7 +42,7 @@ class Enemy extends RectangleComponent {
         ),
       )
       ..addTransition(
-        StateTransition<Enemy>.global(
+        StateTransition.global(
           priority: 1,
           to: deathState,
           guard: (owner) => !isPatrolling,

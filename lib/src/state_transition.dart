@@ -83,11 +83,18 @@ class StateTransition<T> {
   /// [to] is the target state of the transition.
   /// [guard] determines whether the transition is allowed.
   /// [priority] determines evaluation order (higher runs first).
-  const StateTransition.global({
-    this.priority = 1,
-    required this.to,
-    required this.guard,
-  }) : match = const AnyStateMatch();
+  static StateTransition<T> global<T>({
+    int priority = 1,
+    required State<T> to,
+    required Guard<T> guard,
+  }) {
+    return StateTransition<T>(
+      priority: priority,
+      match: const AnyStateMatch(),
+      to: to,
+      guard: guard,
+    );
+  }
 
   /// The priority of this transition.
   ///
