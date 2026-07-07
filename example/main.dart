@@ -88,7 +88,7 @@ class IdleState extends State<Enemy> {
   }
 
   @override
-  void onUpdate(double dt, Enemy owner) {
+  void onUpdate(Enemy owner, double dt) {
     _timer += dt;
     if (_timer >= _idleDuration) {
       owner.isPatrolling = true;
@@ -116,7 +116,7 @@ class PatrolState extends State<Enemy> {
   }
 
   @override
-  void onUpdate(double dt, Enemy owner) {
+  void onUpdate(Enemy owner, double dt) {
     // Move the enemy in the patrol direction
     owner.position += _patrolDirection * _patrolSpeed * dt;
 
@@ -146,7 +146,7 @@ class DeathState extends State<Enemy> {
   }
 
   @override
-  void onUpdate(double dt, Enemy owner) {
+  void onUpdate(Enemy owner, double dt) {
     // Optionally handle death logic here
   }
 }

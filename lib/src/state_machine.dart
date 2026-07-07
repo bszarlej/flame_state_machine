@@ -173,6 +173,6 @@ class StateMachine<T> extends Component {
       break;
     }
 
-    _currentState.onUpdate(dt, _owner);
+    _currentState.onUpdate(_owner, dt);
   }
 }

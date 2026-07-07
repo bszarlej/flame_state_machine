@@ -38,5 +38,5 @@ abstract class State<T> {
   ///
   /// [dt] is the delta time since last update.
   /// [owner] is the state machine's owner.
-  void onUpdate(double dt, T owner) {}
+  void onUpdate(T owner, double dt) {}
 }

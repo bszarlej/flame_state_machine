@@ -27,22 +27,22 @@ Extend the `State<T>` class to define your custom states:
 ```dart
 class IdleState extends State<Enemy> {
   @override
-  void onEnter(Enemy enemy, State<Enemy>? from) {
+  void onEnter(Enemy owner, State<Enemy>? from) {
     print('Enemy entered Idle state');
   }
 
   @override
-  void onExit(Enemy enemy, State<Enemy> to) {
+  void onExit(Enemy owner, State<Enemy> to) {
     print('Enemy exited Idle state');
   }
 
   @override
-  void onRender(Canvas canvas, Enemy enemy) {
+  void onRender(Enemy owner, Canvas canvas) {
     // optionally render idle-specific visuals here (useful for debugging)
   }
 
   @override
-  void onUpdate(double dt, Enemy enemy) {
+  void onUpdate(Enemy owner, double dt) {
     // handle idle behavior
   }
 }
@@ -74,17 +74,17 @@ class Enemy extends PositionComponent {
         StateTransition.global(
           priority: 999,
           to: deathState,
-          guard: (enemy) => health <= 0,
+          guard: (owner) => health <= 0,
         ),
         StateTransition(
           match: StateMatch.exact(idleState),
           to: chaseState,
-          guard: (enemy) => distanceToPlayer <= 70,
+          guard: (owner) => distanceToPlayer <= 70,
         ),
         StateTransition(
           match: StateMatch.exact(chaseState),
           to: idleState,
-          guard: (enemy) => distanceToPlayer > 70,
+          guard: (owner) => distanceToPlayer > 70,
         )
       ]
     );

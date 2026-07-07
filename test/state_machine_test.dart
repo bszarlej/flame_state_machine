@@ -120,7 +120,7 @@ class StateA extends State<TestOwner> {
   }
 
   @override
-  void onUpdate(double dt, TestOwner owner) {}
+  void onUpdate(TestOwner owner, double dt) {}
 }
 
 class StateB extends State<TestOwner> {
@@ -138,7 +138,7 @@ class StateB extends State<TestOwner> {
   }
 
   @override
-  void onUpdate(double dt, TestOwner owner) {}
+  void onUpdate(TestOwner owner, double dt) {}
 }
 
 class StateC extends State<TestOwner> {
@@ -156,7 +156,7 @@ class StateC extends State<TestOwner> {
   }
 
   @override
-  void onUpdate(double dt, TestOwner owner) {}
+  void onUpdate(TestOwner owner, double dt) {}
 }
 
 class TestOwner {
