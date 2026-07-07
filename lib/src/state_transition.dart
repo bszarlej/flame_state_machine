@@ -26,7 +26,6 @@ typedef Guard<T> = bool Function(T owner);
 ///
 /// Common matchers include:
 /// - [ExactStateMatch] to match a specific state instance.
-/// - [TypeStateMatch] to match any state of a given type.
 /// - [AnyStateMatch] to match every state.
 ///
 ///
@@ -39,12 +38,6 @@ typedef Guard<T> = bool Function(T owner);
 /// ```dart
 /// StateTransition<Player>(
 ///   match: StateMatch.exact(idleState),
-///   to: runningState,
-///   guard: (player) => player.isMoving,
-/// );
-///
-/// StateTransition<Player>(
-///   match: StateMatch.type<Player, IdleState>(),
 ///   to: runningState,
 ///   guard: (player) => player.isMoving,
 /// );
@@ -90,7 +83,7 @@ class StateTransition<T> {
   }) {
     return StateTransition<T>(
       priority: priority,
-      match: const AnyStateMatch(),
+      match: StateMatch.any<T>(),
       to: to,
       guard: guard,
     );

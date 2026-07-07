@@ -6,7 +6,6 @@ import 'package:flame_state_machine/flame_state_machine.dart';
 /// Different implementations define different matching strategies:
 /// - [AnyStateMatch]: matches any state
 /// - [ExactStateMatch]: matches a specific state instance
-/// - [TypeStateMatch]: matches based on runtime type
 abstract class StateMatch<T> {
   const StateMatch();
 
@@ -17,14 +16,6 @@ abstract class StateMatch<T> {
   ///
   /// Uses identity comparison (`identical`) to ensure exact instance matching.
   static StateMatch<T> exact<T>(State<T> state) => ExactStateMatch<T>(state);
-
-  /// Creates a matcher that matches states of a specific type [S].
-  ///
-  /// Example:
-  /// ```dart
-  /// StateMatch.type<Enemy, IdleState>()
-  /// ```
-  static StateMatch<T> type<T, S extends State<T>>() => TypeStateMatch<T, S>();
 
   /// Determines whether the given [state] matches this matcher.
   ///
@@ -56,15 +47,4 @@ final class ExactStateMatch<T> extends StateMatch<T> {
 
   @override
   bool matches(State<T> state) => identical(state, _state);
-}
-
-/// Matches states based on their runtime type.
-///
-/// This allows transitions to apply to all states of a given class type
-/// regardless of instance identity.
-final class TypeStateMatch<T, S extends State<T>> extends StateMatch<T> {
-  const TypeStateMatch();
-
-  @override
-  bool matches(State<T> state) => state.runtimeType == S;
 }
