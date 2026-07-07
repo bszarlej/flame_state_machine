@@ -54,38 +54,43 @@ Since `StateMachine` is a Flame `Component` all you have to do is add it directl
 and it will automatically handle the state transitions and update the current state.
 ```dart
 class Enemy extends PositionComponent {
+  double health = 100.0;
+  
+  double get distanceToPlayer => ...;
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
 
     final idleState = IdleState();
-    final runningState = RunningState();
+    final chaseState = ChaseState();
     final deathState = DeathState();
 
     final stateMachine = StateMachine<Enemy>(
       owner: this,
       initialState: idleState,
-    );
-
-    // transition from any state with a high priority
-    stateMachine.addTransition(
-      StateTransition.globlal(
-        to: deathState,
-        guard: (enemy) => !enemy.isAlive,
-        priority: 100,
-      )
-    );
-
-    stateMachine.addTransition(
-      StateTransition(
-        from: idleState,
-        to: runningState,
-        guard: (enemy) => enemy.isMoving,
-      )
+      transitions: [
+        // global transition from any state
+        StateTransition.global(
+          priority: 999,
+          to: deathState,
+          guard: (enemy) => health <= 0,
+        ),
+        StateTransition(
+          match: StateMatch.exact(idleState),
+          to: chaseState,
+          guard: (enemy) => distanceToPlayer <= 70,
+        ),
+        StateTransition(
+          match: StateMatch.exact(chaseState),
+          to: idleState,
+          guard: (enemy) => distanceToPlayer > 70,
+        )
+      ]
     );
 
     // add the state machine as a child component
+    // it will update its state automatically based on the transitions
     add(stateMachine);
   }
 }
@@ -100,27 +105,17 @@ Match a specific state instance:
 ```dart
 StateTransition(
   match: StateMatch.exact(idleState),
-  to: runningState,
-  guard: (enemy) => enemy.isMoving,
+  to: chaseState,
+  guard: (owner) => owner.distanceToPlayer <= 70,
 );
 ```
 
-Match any state of a given type:
-
-```dart
-StateTransition(
-  match: StateMatch.type<Enemy, IdleState>(),
-  to: runningState,
-  guard: (enemy) => enemy.isMoving,
-);
-```
-
-Or create a transition that can occur from any state using:
+Or create a transition that can occur from any state using either:
 
 ```dart
 StateTransition.global(
   to: deathState,
-  guard: (enemy) => !enemy.isAlive,
+  guard: (owner) => owner.health <= 0,
 );
 ```
 
@@ -130,7 +125,7 @@ or:
 StateTransition(
   match: StateMatch.any(),
   to: deathState,
-  guard: (enemy) => !enemy.isAlive,
+  guard: (owner) => owner.health <= 0,
 );
 ```
 
@@ -138,6 +133,7 @@ StateTransition(
 
 - `StateMachine<T>` — Core FSM logic, implemented as a Flame `Component`
 - `State<T>` — Base class for your states (override `onEnter`, `onExit`, `onRender`, `onUpdate`)
+- `StateMatch<T>` - Determines the state[s] from which a transition can occur
 - `StateTransition<T>` — Defines transitions between states with guards and priorities
 
 

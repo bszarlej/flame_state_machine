@@ -12,6 +12,8 @@ void main() {
 class Enemy extends RectangleComponent {
   bool isPatrolling = false;
 
+  double health = 100;
+
   @override
   FutureOr<void> onLoad() async {
     await super.onLoad();
@@ -43,9 +45,9 @@ class Enemy extends RectangleComponent {
       )
       ..addTransition(
         StateTransition.global(
-          priority: 1,
+          priority: 999,
           to: deathState,
-          guard: (owner) => !isPatrolling,
+          guard: (owner) => health <= 0,
         ),
       );
 
