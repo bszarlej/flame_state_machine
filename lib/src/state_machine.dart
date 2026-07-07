@@ -64,12 +64,10 @@ class StateMachine<T> extends Component {
     this.onTransitionStart,
   }) : _previousState = null,
        _currentState = initialState {
-    _transitions
-      ..addAll(transitions)
-      ..sort((a, b) => b.priority.compareTo(a.priority));
-    _readOnlyTransitions = UnmodifiableListView(_transitions);
-
     _owner = owner;
+
+    addTransitions(transitions);
+
     onTransitionStart?.call(_owner, null, _currentState);
     _currentState.onEnter(_owner, null);
   }
@@ -85,25 +83,56 @@ class StateMachine<T> extends Component {
   final List<StateTransition<T>> _transitions = [];
   late UnmodifiableListView<StateTransition<T>> _readOnlyTransitions;
 
-  /// The current active state.
+  /// Returns the current active state.
   State<T> get currentState => _currentState;
 
-  /// The previous state before the current one.
+  /// Returns the previous state before the current one.
   State<T>? get previousState => _previousState;
 
-  /// The list of all registered state transitions.
+  /// Returns a unmodifiable list of all registered state transitions.
   UnmodifiableListView<StateTransition<T>> get transitions =>
       _readOnlyTransitions;
 
   /// Adds a [StateTransition] to the state machine, sorted by priority.
   void addTransition(StateTransition<T> transition) {
+    addTransitions([transition]);
+  }
+
+  /// Adds a list of [StateTransition]s to the state machine.
+  ///
+  /// Newly added transitions are merged with the existing ones and the
+  /// complete list is sorted in descending priority order.
+  void addTransitions(List<StateTransition<T>> transitions) {
     _transitions
-      ..add(transition)
+      ..addAll(transitions)
       ..sort((a, b) => b.priority.compareTo(a.priority));
     _readOnlyTransitions = UnmodifiableListView(_transitions);
   }
 
-  /// Renders the current state's visuals onto the provided [canvas]
+  /// Removes a [StateTransition] from the state machine
+  bool removeTransition(StateTransition<T> transition) {
+    final removed = _transitions.remove(transition);
+    _readOnlyTransitions = UnmodifiableListView(_transitions);
+    return removed;
+  }
+
+  /// Removes all [StateTransition]s from the state machine
+  void clearTransitions() {
+    _transitions.clear();
+    _readOnlyTransitions = UnmodifiableListView(_transitions);
+  }
+
+  /// Returns whether the given [StateTransition] is currently registered
+  /// with the state machine.
+  bool hasTransition(StateTransition<T> transition) =>
+      _transitions.contains(transition);
+
+  /// Returns whether any registered [StateTransition] applies to the given
+  /// [state].
+  bool hasTransitionsFor(State<T> state) =>
+      _transitions.any((t) => t.match.matches(state));
+
+  /// Renders the current [State]s visuals onto the provided [canvas]
   /// by calling its [onRender] method.
   @override
   void render(Canvas canvas) {
