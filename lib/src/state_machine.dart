@@ -140,7 +140,7 @@ class StateMachine<T> extends Component {
     currentState.onRender(_owner, canvas);
   }
 
-  void _setState(State<T> state) {
+  void _performTransition(State<T> state) {
     final from = _currentState;
     final to = state;
 
@@ -169,7 +169,7 @@ class StateMachine<T> extends Component {
           !transition.guard(_owner)) {
         continue;
       }
-      _setState(transition.to);
+      _performTransition(transition.to);
       break;
     }
 
