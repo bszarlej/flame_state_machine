@@ -57,11 +57,11 @@ typedef Guard<T> = bool Function(T owner);
 class StateTransition<T> {
   /// Creates a [StateTransition].
   ///
-  /// [match] determines which current states this transition applies to.
-  /// [to] is the target state of the transition.
-  /// [guard] determines whether the transition is allowed.
+  /// - [match] determines which current states this transition applies to.
+  /// - [to] is the target state of the transition.
+  /// - [guard] determines whether the transition is allowed.
   /// can occur from any state.
-  /// [priority] determines evaluation order (higher runs first).
+  /// - [priority] determines evaluation order (higher runs first).
   const StateTransition({
     this.priority = 1,
     required this.match,
@@ -73,9 +73,9 @@ class StateTransition<T> {
   ///
   /// This is equivalent to using `match: const AnyStateMatch()`.
   ///
-  /// [to] is the target state of the transition.
-  /// [guard] determines whether the transition is allowed.
-  /// [priority] determines evaluation order (higher runs first).
+  /// - [to] is the target state of the transition.
+  /// - [guard] determines whether the transition is allowed.
+  /// - [priority] determines evaluation order (higher runs first).
   static StateTransition<T> global<T>({
     int priority = 1,
     required State<T> to,
