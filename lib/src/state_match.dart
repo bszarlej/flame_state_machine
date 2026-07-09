@@ -1,4 +1,4 @@
-import 'package:flame_state_machine/flame_state_machine.dart';
+import 'package:flame_state_machine/src/state.dart';
 
 /// A matcher used by the state machine to determine whether a transition
 /// is valid based on the current state.
