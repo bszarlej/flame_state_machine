@@ -23,8 +23,8 @@ abstract class State<T> {
   /// Called when this state is entered.
   ///
   /// - [owner] is the state machine's owner.
-  /// - [from] is the previous state (if any).
-  void onEnter(T owner, State<T>? from) {}
+  /// - [prev] is the previous state (if any).
+  void onEnter(T owner, State<T>? prev) {}
 
   /// Called on every update tick while this state is active.
   ///
@@ -55,6 +55,6 @@ abstract class State<T> {
   /// Called when this state is exited.
   ///
   /// - [owner] is the state machine's owner.
-  /// - [to] is the next state.
-  void onExit(T owner, State<T> to) {}
+  /// - [next] is the next state.
+  void onExit(T owner, State<T> next) {}
 }

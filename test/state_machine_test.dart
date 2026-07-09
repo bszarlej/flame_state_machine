@@ -110,12 +110,12 @@ class StateA extends State<TestOwner> {
   bool exited = false;
 
   @override
-  void onEnter(TestOwner owner, [State<TestOwner>? from]) {
+  void onEnter(TestOwner owner, State<TestOwner>? prev) {
     entered = true;
   }
 
   @override
-  void onExit(TestOwner owner, [State<TestOwner>? to]) {
+  void onExit(TestOwner owner, State<TestOwner> next) {
     exited = true;
   }
 
@@ -128,12 +128,12 @@ class StateB extends State<TestOwner> {
   bool exited = false;
 
   @override
-  void onEnter(TestOwner owner, [State<TestOwner>? from]) {
+  void onEnter(TestOwner owner, State<TestOwner>? prev) {
     entered = true;
   }
 
   @override
-  void onExit(TestOwner owner, [State<TestOwner>? to]) {
+  void onExit(TestOwner owner, State<TestOwner> next) {
     exited = true;
   }
 
@@ -146,12 +146,12 @@ class StateC extends State<TestOwner> {
   bool exited = false;
 
   @override
-  void onEnter(TestOwner owner, [State<TestOwner>? from]) {
+  void onEnter(TestOwner owner, State<TestOwner>? prev) {
     entered = true;
   }
 
   @override
-  void onExit(TestOwner owner, [State<TestOwner>? to]) {
+  void onExit(TestOwner owner, State<TestOwner> next) {
     exited = true;
   }
 

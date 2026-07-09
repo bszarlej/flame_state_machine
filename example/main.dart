@@ -72,13 +72,13 @@ class IdleState extends State<Enemy> {
   double _timer = 0.0;
 
   @override
-  void onEnter(Enemy owner, [State<Enemy>? from]) {
+  void onEnter(Enemy owner, State<Enemy>? prev) {
     _timer = 0.0;
     print('Enemy entered Idle state');
   }
 
   @override
-  void onExit(Enemy owner, [State<Enemy>? to]) {
+  void onExit(Enemy owner, State<Enemy> next) {
     print('Enemy exited Idle state');
   }
 
@@ -101,17 +101,17 @@ class PatrolState extends State<Enemy> {
   final double _patrolSpeed = 75;
 
   @override
-  void onEnter(Enemy owner, [State<Enemy>? from]) {
+  void onEnter(Enemy owner, State<Enemy>? prev) {
     print('Enemy entered Patrol state');
   }
 
   @override
-  void onExit(Enemy owner, [State<Enemy>? to]) {
+  void onExit(Enemy owner, State<Enemy> next) {
     print('Enemy exited Patrol state');
   }
 
   @override
-  onRender(Enemy owner, Canvas canvas) {
+  void onRender(Enemy owner, Canvas canvas) {
     // Optionally draw patrol-specific visuals here
   }
 
@@ -130,13 +130,13 @@ class PatrolState extends State<Enemy> {
 
 class DeathState extends State<Enemy> {
   @override
-  void onEnter(Enemy owner, [State<Enemy>? from]) {
+  void onEnter(Enemy owner, State<Enemy>? prev) {
     print('Enemy entered Death state');
     // Optionally perform death animation or logic here
   }
 
   @override
-  void onExit(Enemy owner, [State<Enemy>? to]) {
+  void onExit(Enemy owner, State<Enemy> next) {
     print('Enemy exited Death state');
   }
 

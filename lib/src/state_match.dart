@@ -6,6 +6,7 @@ import 'package:flame_state_machine/src/state.dart';
 /// Different implementations define different matching strategies:
 /// - [AnyStateMatch]: matches any state
 /// - [ExactStateMatch]: matches a specific state instance
+/// - [MultiStateMatch]: matches multiple state instances
 abstract class StateMatch<T> {
   const StateMatch();
 
