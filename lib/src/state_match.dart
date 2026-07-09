@@ -12,6 +12,12 @@ abstract class StateMatch<T> {
   /// Creates a matcher that matches any state.
   static StateMatch<T> any<T>() => AnyStateMatch<T>();
 
+  /// Creates a matcher that matches any of the provided state instances.
+  ///
+  /// Uses identity comparison (`identical`) for each state.
+  static StateMatch<T> anyOf<T>(Iterable<State<T>> states) =>
+      MultiStateMatch(states);
+
   /// Creates a matcher that matches a specific state instance.
   ///
   /// Uses identity comparison (`identical`) to ensure exact instance matching.
@@ -47,4 +53,20 @@ final class ExactStateMatch<T> extends StateMatch<T> {
 
   @override
   bool matches(State<T> state) => identical(state, _state);
+}
+
+/// Matches any one of several specific state instances.
+///
+/// The matcher succeeds if the current state is identical to one of the
+/// provided state instances.
+///
+/// This is useful when multiple states share the same transition.
+final class MultiStateMatch<T> extends StateMatch<T> {
+  const MultiStateMatch(this._states);
+
+  /// The state instances to match against.
+  final Iterable<State<T>> _states;
+
+  @override
+  bool matches(State<T> state) => _states.any((s) => identical(s, state));
 }

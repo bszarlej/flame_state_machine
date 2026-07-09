@@ -29,27 +29,35 @@ import 'package:flame_state_machine/src/state_transition.dart';
 /// Common matchers include:
 /// - [ExactStateMatch] to match a specific state instance.
 /// - [AnyStateMatch] to match every state.
+/// - [MultiStateMatch] to match multiple states.
 ///
 /// Custom matchers can be created to implement more complex transition rules.
 ///
 /// ### Example
 /// ```dart
-/// final idleState = IdleState();
-/// final runningState = RunningState();
+/// final idle = IdleState(duration: 8);
+/// final patrol = PatrolState(patrolPoints: 5);
+/// final chase = ChaseState();
+/// final dead = DeadState();
 ///
-/// final stateMachine = StateMachine<Player>(
+/// final stateMachine = StateMachine<Enemy>(
 ///   owner: this,
-///   initialState: idleState,
+///   initialState: idle,
 ///   transitions: [
-///     StateTransition<Player>(
-///       match: StateMatch.exact(idleState),
-///       to: runningState,
-///       guard: (player) => player.isMoving,
+///     StateTransition<Enemy>(
+///       match: StateMatch.exact(idle),
+///       to: patrol,
+///       guard: (_) => idle.finished,
 ///     ),
-///     StateTransition<Player>.global(
-///       to: idleState,
-///       guard: (player) => !player.isMoving,
+///     StateTransition<Enemy>.global(
+///       to: dead,
+///       guard: (enemy) => enemy.health <= 0,
 ///     ),
+///      StateTransition<Enemy>(
+///       match: StateMatch.anyOf([idle, patrol]),
+///       to: chase,
+///       guard: (enemy) => enemy.distanceToPlayer <= 70,
+///     )
 ///   ],
 /// );
 ///
@@ -63,7 +71,7 @@ import 'package:flame_state_machine/src/state_transition.dart';
 /// - [StateMatch] controls which states a transition can trigger from.
 /// - Transitions are evaluated in priority order (higher priority first).
 /// - State lifecycle methods ([State.onEnter], [State.onExit],
-///   [State.onRender], [State.onUpdate]) are delegated to the active state.
+///   [State.onRender], [State.onRenderDebugMode], [State.onUpdate]) are delegated to the active state.
 /// - Only one transition is executed per update cycle (first valid match wins).
 class StateMachine<T> extends Component {
   /// Creates a [StateMachine] for the given [owner] and optional [initialState].

@@ -6,10 +6,10 @@ import 'package:flame/extensions.dart';
 /// Subclasses should override lifecycle methods to implement state-specific
 /// logic:
 /// - [onEnter]: called when entering this state.
-/// - [onExit]: called when leaving this state.
 /// - [onUpdate]: called every update tick while this state is active.
 /// - [onRender]: called every render tick while this state is active.
 /// - [onRenderDebugMode]: called when debug rendering is enabled while this
+/// - [onExit]: called when leaving this state.
 ///   state is active.
 ///
 /// States can be used to manage behavior, animations, timers, effects,
@@ -26,11 +26,11 @@ abstract class State<T> {
   /// [from] is the previous state (if any).
   void onEnter(T owner, State<T>? from) {}
 
-  /// Called when this state is exited.
+  /// Called on every update tick while this state is active.
   ///
+  /// [dt] is the delta time since last update.
   /// [owner] is the state machine's owner.
-  /// [to] is the next state (if any).
-  void onExit(T owner, State<T> to) {}
+  void onUpdate(T owner, double dt) {}
 
   /// Called on every render tick while this state is active.
   ///
@@ -52,9 +52,9 @@ abstract class State<T> {
   /// [canvas] is the canvas used for debug rendering.
   void onRenderDebugMode(T owner, Canvas canvas) {}
 
-  /// Called on every update tick while this state is active.
+  /// Called when this state is exited.
   ///
-  /// [dt] is the delta time since last update.
   /// [owner] is the state machine's owner.
-  void onUpdate(T owner, double dt) {}
+  /// [to] is the next state.
+  void onExit(T owner, State<T> to) {}
 }
