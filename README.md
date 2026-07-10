@@ -2,7 +2,7 @@
 
 A lightweight and flexible **finite state machine** package for the [Flame](https://flame-engine.org/) game engine, written in Dart.
 
-Manage complex stateful behaviors for your Flame `Component`s with ease, enabling clean and maintainable game logic.
+Built around Flame's component architecture, it allows you to separate entity behavior into clean, reusable states while automatically integrating with Flame's update and render lifecycle.
 
 <a title="CI" href="https://github.com/bszarlej/flame_state_machine/actions/workflows/ci.yaml"><img src="https://github.com/bszarlej/flame_state_machine/actions/workflows/ci.yaml/badge.svg"></a>
 <a title="Pub" href="https://pub.dev/packages/flame_state_machine" ><img src="https://img.shields.io/pub/v/flame_state_machine.svg?style=popout"></a>
@@ -12,11 +12,13 @@ Manage complex stateful behaviors for your Flame `Component`s with ease, enablin
 
 ## Features
 
-- Supports prioritized state transitions with custom guard conditions
-- Flexible state matching using `StateMatch`
-- Lifecycle callbacks for entering, exiting, rendering, and updating states
-- Global transitions that can trigger from any state
-
+- Flame-native `StateMachine` implementation that integrates directly into the component tree
+- Clean state lifecycle management with `onEnter`, `onExit`, `onUpdate`, `onRender`, and `onRenderDebugMode` callbacks
+- Priority-based transitions for handling complex behavior hierarchies
+- Flexible state matching with exact, global, and multi-state transition rules
+- Generic state ownership, allowing states to control any Flame `Component`
+- Built-in transition hooks for observing and reacting to state changes
+- Simple composition of complex game behaviors without large conditional blocks
 
 ## Usage
 
@@ -27,18 +29,23 @@ Extend the `State<T>` class to define your custom states:
 ```dart
 class IdleState extends State<Enemy> {
   @override
-  void onEnter(Enemy owner, State<Enemy>? from) {
+  void onEnter(Enemy owner, State<Enemy>? prev) {
     print('Enemy entered Idle state');
   }
 
   @override
-  void onExit(Enemy owner, State<Enemy> to) {
+  void onExit(Enemy owner, State<Enemy> next) {
     print('Enemy exited Idle state');
   }
 
   @override
   void onRender(Enemy owner, Canvas canvas) {
-    // optionally render idle-specific visuals here (useful for debugging)
+    // optionally render idle-specific visuals here
+  }
+
+  @override
+  void onRenderDebugMode(Enemy owner, Canvas canvas) {
+    // render debug stuff
   }
 
   @override
@@ -64,7 +71,7 @@ class Enemy extends PositionComponent {
 
     final idleState = IdleState();
     final chaseState = ChaseState();
-    final deathState = DeathState();
+    final deadState = DeadState();
 
     final stateMachine = StateMachine<Enemy>(
       owner: this,
@@ -73,7 +80,7 @@ class Enemy extends PositionComponent {
         // global transition from any state
         StateTransition.global(
           priority: 999,
-          to: deathState,
+          to: deadState,
           guard: (owner) => health <= 0,
         ),
         StateTransition(
@@ -90,7 +97,7 @@ class Enemy extends PositionComponent {
     );
 
     // add the state machine as a child component
-    // it will update its state automatically based on the transitions
+    // it will update its state automatically based on provided state transitions
     add(stateMachine);
   }
 }
@@ -98,9 +105,9 @@ class Enemy extends PositionComponent {
 
 ### State matching
 
-`StateTransition` uses `StateMatch` to determine when a transition is applicable.
+`StateTransition` uses `StateMatch` to determine from which state or states a transition can occur.
 
-Match a specific state instance:
+Match a specific state:
 
 ```dart
 StateTransition(
@@ -110,29 +117,42 @@ StateTransition(
 );
 ```
 
-Or create a transition that can occur from any state using either:
+Match any state:
 
 ```dart
 StateTransition.global(
-  to: deathState,
+  to: deadState,
   guard: (owner) => owner.health <= 0,
 );
 ```
 
-or:
+Match mutliple states:
 
 ```dart
 StateTransition(
-  match: StateMatch.any(),
-  to: deathState,
-  guard: (owner) => owner.health <= 0,
+  match: StateMatch.anyOf([idleState, patrolState])
+  to: chaseState,
+  guard: (owner) => owner.distanceToPlayer <= 70,
 );
 ```
+
+## Example
+
+A complete example project demonstrating `flame_state_machine` in a Flame game:
+
+[flame_state_machine_example](https://github.com/bszarlej/flame_state_machine_example)
+
+The example demonstrates:
+
+- Enemy "AI" using multiple states
+- Patrol, chase, combat, retreat, and death behaviors
+- Prioritized and global transitions
+- State-specific rendering and debug visualization
 
 ## API
 
 - `StateMachine<T>` — Core FSM logic, implemented as a Flame `Component`
-- `State<T>` — Base class for your states (override `onEnter`, `onExit`, `onRender`, `onUpdate`)
+- `State<T>` — Base class for your states (override `onEnter`, `onExit`, `onRender`, `onRenderDebugMode`, `onUpdate`)
 - `StateMatch<T>` - Determines the state[s] from which a transition can occur
 - `StateTransition<T>` — Defines transitions between states with guards and priorities
 

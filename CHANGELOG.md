@@ -1,3 +1,11 @@
+## 3.0.0
+
+* **BREAKING**: Introduced `StateMatch` for more flexible state transition matching.
+* **BREAKING**: Removed reverse transitions. Transitions must now be explicitly defined.
+* Added `onRenderDebugMode()` lifecycle method to `State` for debug-only rendering.
+* Added transition management methods to `StateMachine`.
+* Improved documentation and updated examples.
+
 ## 2.0.3
 
 * **FIX**: added onExit call during setState. ([#6](https://github.com/bszarlej/flame_state_machine/pull/6))
