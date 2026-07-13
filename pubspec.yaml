@@ -11,7 +11,7 @@ topics:
   - dart
 
 environment:
-  sdk: ^3.8.1
+  sdk: ^3.12.2
   flutter: ">=1.17.0"
 
 dependencies:
