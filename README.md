@@ -121,6 +121,13 @@ StateTransition(
 Match any state:
 
 ```dart
+StateTransition(
+  match: StateMatch.any(),
+  to: deadState,
+  guard: (owner) => owner.health <= 0,
+);
+
+// or shorter
 StateTransition.global(
   to: deadState,
   guard: (owner) => owner.health <= 0,
