@@ -8,6 +8,10 @@ import 'package:flame_state_machine/src/state.dart';
 /// - [ExactStateMatch]: matches a specific state instance
 /// - [MultiStateMatch]: matches multiple state instances
 abstract class StateMatch<T> {
+  /// Creates a new state matcher.
+  ///
+  /// Subclasses define different strategies for determining whether a
+  /// transition is applicable to the current state.
   const StateMatch();
 
   /// Creates a matcher that matches any state.
@@ -36,6 +40,7 @@ abstract class StateMatch<T> {
 /// This is typically used for global transitions that should be evaluated
 /// regardless of the current state.
 final class AnyStateMatch<T> extends StateMatch<T> {
+  /// Creates a matcher that matches every state.
   const AnyStateMatch();
 
   @override
@@ -47,6 +52,9 @@ final class AnyStateMatch<T> extends StateMatch<T> {
 /// This ensures the transition only applies when the exact same state
 /// instance is active.
 final class ExactStateMatch<T> extends StateMatch<T> {
+  /// Creates a matcher for a specific state instance.
+  ///
+  /// The matcher succeeds only when the current state is identical to [state].
   const ExactStateMatch(this._state);
 
   /// The specific state instance to match against.
@@ -63,6 +71,10 @@ final class ExactStateMatch<T> extends StateMatch<T> {
 ///
 /// This is useful when multiple states share the same transition.
 final class MultiStateMatch<T> extends StateMatch<T> {
+  /// Creates a matcher for multiple state instances.
+  ///
+  /// The matcher succeeds if the current state is identical to any state in
+  /// [states].
   const MultiStateMatch(this._states);
 
   /// The state instances to match against.
