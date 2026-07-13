@@ -98,8 +98,10 @@ class StateMachine<T> extends Component {
   void Function(T owner, State<T>? from, State<T> to)? onTransitionStart;
 
   late T _owner;
+
   State<T> _currentState;
   State<T>? _previousState;
+
   final List<StateTransition<T>> _transitions = [];
   late UnmodifiableListView<StateTransition<T>> _readOnlyTransitions;
 
@@ -152,22 +154,6 @@ class StateMachine<T> extends Component {
   bool hasTransitionsFor(State<T> state) =>
       _transitions.any((t) => t.match.matches(state));
 
-  /// Renders the current [State]'s visuals onto the provided [canvas]
-  /// by calling its [onRender] method.
-  @override
-  void render(Canvas canvas) {
-    currentState.onRender(_owner, canvas);
-  }
-
-  /// Renders the current [State]'s debug visuals onto the provided [canvas].
-  ///
-  /// This method is called by Flame when debug rendering is enabled and delegates
-  /// the rendering to the active state's [State.onRenderDebugMode] method.
-  @override
-  void renderDebugMode(Canvas canvas) {
-    currentState.onRenderDebugMode(_owner, canvas);
-  }
-
   /// Immediately changes the active state.
   ///
   /// If [state] is already the current state, this method has no effect.
@@ -191,6 +177,22 @@ class StateMachine<T> extends Component {
 
     from.onExit(_owner, to);
     to.onEnter(_owner, from);
+  }
+
+  /// Renders the current [State]'s visuals onto the provided [canvas]
+  /// by calling its [onRender] method.
+  @override
+  void render(Canvas canvas) {
+    currentState.onRender(_owner, canvas);
+  }
+
+  /// Renders the current [State]'s debug visuals onto the provided [canvas].
+  ///
+  /// This method is called by Flame when debug rendering is enabled and delegates
+  /// the rendering to the active state's [State.onRenderDebugMode] method.
+  @override
+  void renderDebugMode(Canvas canvas) {
+    currentState.onRenderDebugMode(_owner, canvas);
   }
 
   /// Updates the state machine.
