@@ -10,8 +10,8 @@ import 'package:flame_state_machine/src/state_transition.dart';
 /// The [StateMachine] is a [Component], meaning it can be added to a Flame
 /// component tree and its [update] and [render] methods will be called
 /// automatically by the game loop. It maintains the current and previous states
-/// of an owner object of type [T] and executes transitions based on a set of
-/// predefined [StateTransition] rules.
+/// of an owner object of type [T] and executes state changes either
+/// automatically through [StateTransition] rules or manually via [changeState].
 ///
 /// Transitions are evaluated in priority order (higher priority first). Each
 /// transition defines a [StateMatch] that determines which states it can trigger
@@ -65,6 +65,34 @@ import 'package:flame_state_machine/src/state_transition.dart';
 /// add(stateMachine);
 /// ```
 ///
+///
+/// ### Manual state changes
+///
+/// A state machine can also be used without registering any transitions.
+/// States can be changed directly by calling [changeState].
+///
+/// ```dart
+/// final idle = IdleState();
+/// final attack = AttackState();
+///
+/// final stateMachine = StateMachine<Player>(
+///   owner: this,
+///   initialState: idle,
+/// );
+///
+/// add(stateMachine);
+///
+/// // Later...
+/// stateMachine.changeState(attack);
+/// ```
+///
+/// When using [changeState], all registered transition rules and guards are
+/// bypassed. The normal state lifecycle is still executed:
+///
+/// 1. [StateMachine.onTransitionStart]
+/// 2. [State.onExit]
+/// 3. [State.onEnter]
+///
 /// Key points:
 /// - The owner is the object controlled by this state machine (e.g. a Flame component).
 /// - Transitions are defined explicitly using [StateTransition] objects.
@@ -95,7 +123,7 @@ class StateMachine<T> extends Component {
   /// A function that is called at the start of a state transition.
   /// It receives the [owner], the previous state ([from]), and the new state ([to]).
   /// This can be used for logging, analytics, or triggering side effects.
-  void Function(T owner, State<T>? from, State<T> to)? onTransitionStart;
+  final void Function(T owner, State<T>? from, State<T> to)? onTransitionStart;
 
   late T _owner;
 
