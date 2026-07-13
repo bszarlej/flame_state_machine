@@ -1,3 +1,8 @@
+## 3.1.0
+
+* Added `changeState()` to allow manual state changes without transition evaluation.
+* Updated documentation.
+
 ## 3.0.0
 
 * **BREAKING**: Introduced `StateMatch` for more flexible state transition matching.

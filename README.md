@@ -15,6 +15,7 @@ Built around Flame's component architecture, it allows you to separate entity be
 - Flame-native `StateMachine` implementation that integrates directly into the component tree
 - Clean state lifecycle management with `onEnter`, `onExit`, `onUpdate`, `onRender`, and `onRenderDebugMode` callbacks
 - Priority-based transitions for handling complex behavior hierarchies
+- Manual state changes for direct behavior control when transitions are not required
 - Flexible state matching with exact, global, and multi-state transition rules
 - Generic state ownership, allowing states to control any Flame `Component`
 - Built-in transition hooks for observing and reacting to state changes
@@ -126,7 +127,7 @@ StateTransition.global(
 );
 ```
 
-Match mutliple states:
+Match multiple states:
 
 ```dart
 StateTransition(
@@ -135,6 +136,35 @@ StateTransition(
   guard: (owner) => owner.distanceToPlayer <= 70,
 );
 ```
+
+### Manual state changes
+
+In addition to automatic transitions, states can also be changed manually using
+the `StateMachine.changeState` method.
+
+This is useful for situations where a state change is triggered externally,
+such as player input, scripted events, cutscenes, or forced behaviors.
+
+```dart
+class AttackState extends State<Enemy> {
+  @override
+  void onUpdate(Enemy owner, double dt) {
+    if (owner.attackFinished) {
+      owner.stateMachine.changeState(owner.idleState);
+    }
+  }
+}
+```
+
+Manual state changes bypass transition matching and guard conditions. The normal
+state lifecycle is still executed:
+
+1. onTransitionStart is called
+2. The current state's onExit is called
+3. The new state's onEnter is called
+
+For behavior that should be controlled by conditions, use StateTransition.
+For direct control, use changeState.
 
 ## Example
 
@@ -151,7 +181,7 @@ The example demonstrates:
 
 ## API
 
-- `StateMachine<T>` — Core FSM logic, implemented as a Flame `Component`
+- `StateMachine<T>` — Core FSM logic, implemented as a Flame `Component`. Supports automatic transitions and manual state changes.
 - `State<T>` — Base class for your states (override `onEnter`, `onExit`, `onRender`, `onRenderDebugMode`, `onUpdate`)
 - `StateMatch<T>` - Determines the state[s] from which a transition can occur
 - `StateTransition<T>` — Defines transitions between states with guards and priorities
