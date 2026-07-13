@@ -1,3 +1,9 @@
+## 3.1.1
+
+* Improved documentation
+* Updated dart sdk to ^3.12.2
+* Replaced StateTransition.global static method with factory constructor
+
 ## 3.1.0
 
 * Added `changeState()` to allow manual state changes without transition evaluation.
