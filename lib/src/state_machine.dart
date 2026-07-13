@@ -168,7 +168,17 @@ class StateMachine<T> extends Component {
     currentState.onRenderDebugMode(_owner, canvas);
   }
 
-  void _performTransition(State<T> state) {
+  /// Immediately changes the active state.
+  ///
+  /// If [state] is already the current state, this method has no effect.
+  ///
+  /// The transition lifecycle is executed in the following order:
+  /// 1. [onTransitionStart] is invoked.
+  /// 2. The current state's [State.onExit] method is called.
+  /// 3. The new state's [State.onEnter] method is called.
+  ///
+  /// This method bypasses all registered [StateTransition]s and their guards.
+  void changeState(State<T> state) {
     final from = _currentState;
     final to = state;
 
@@ -183,24 +193,36 @@ class StateMachine<T> extends Component {
     to.onEnter(_owner, from);
   }
 
-  /// Updates the state machine, evaluating transitions and updating the current state.
+  /// Updates the state machine.
+  ///
+  /// The active state's [State.onUpdate] method is called every update cycle.
   @override
   void update(double dt) {
     super.update(dt);
 
-    final applicableTransitions = _transitions.where(
-      (t) => t.match.matches(_currentState),
-    );
+    _evaluateTransitions();
 
-    for (final transition in applicableTransitions) {
+    _currentState.onUpdate(_owner, dt);
+  }
+
+  /// Evaluates all registered transitions.
+  ///
+  /// Transitions are checked in priority order. The first transition whose
+  /// [StateMatch] matches the current state and whose guard returns `true`
+  /// will be executed.
+  void _evaluateTransitions() {
+    for (final transition in _transitions) {
+      if (!transition.match.matches(_currentState)) {
+        continue;
+      }
+
       if (identical(transition.to, _currentState) ||
           !transition.guard(_owner)) {
         continue;
       }
-      _performTransition(transition.to);
-      break;
-    }
 
-    _currentState.onUpdate(_owner, dt);
+      changeState(transition.to);
+      return;
+    }
   }
 }
