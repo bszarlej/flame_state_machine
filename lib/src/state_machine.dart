@@ -102,20 +102,17 @@ import 'package:flame_state_machine/src/state_transition.dart';
 ///   [State.onRender], [State.onRenderDebugMode], [State.onUpdate]) are delegated to the active state.
 /// - Only one transition is executed per update cycle (first valid match wins).
 class StateMachine<T> extends Component {
-  /// Creates a [StateMachine] for the given [owner] and optional [initialState].
+  /// Creates a [StateMachine] for the given [owner] and [initialState].
   ///
-  /// The [initialState], if provided, will be entered immediately.
+  /// The [initialState] will be entered immediately.
   StateMachine({
-    required T owner,
+    required this._owner,
     required State<T> initialState,
     List<StateTransition<T>> transitions = const [],
     this.onTransitionStart,
   }) : _previousState = null,
        _currentState = initialState {
-    _owner = owner;
-
     addTransitions(transitions);
-
     onTransitionStart?.call(_owner, null, _currentState);
     _currentState.onEnter(_owner, null);
   }
@@ -125,7 +122,7 @@ class StateMachine<T> extends Component {
   /// This can be used for logging, analytics, or triggering side effects.
   final void Function(T owner, State<T>? from, State<T> to)? onTransitionStart;
 
-  late T _owner;
+  final T _owner;
 
   State<T> _currentState;
   State<T>? _previousState;
