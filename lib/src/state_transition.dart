@@ -69,25 +69,23 @@ class StateTransition<T> {
     required this.guard,
   });
 
-  /// Creates a global transition that can trigger from any state.
+  /// Creates a global [StateTransition] that can trigger from any [State].
   ///
   /// This is equivalent to using `match: const AnyStateMatch()`.
   ///
   /// - [to] is the target state of the transition.
   /// - [guard] determines whether the transition is allowed.
   /// - [priority] determines evaluation order (higher runs first).
-  static StateTransition<T> global<T>({
+  factory StateTransition.global({
     int priority = 1,
     required State<T> to,
     required Guard<T> guard,
-  }) {
-    return StateTransition<T>(
-      priority: priority,
-      match: StateMatch.any<T>(),
-      to: to,
-      guard: guard,
-    );
-  }
+  }) => StateTransition<T>(
+    priority: priority,
+    match: StateMatch.any<T>(),
+    to: to,
+    guard: guard,
+  );
 
   /// The priority of this transition.
   ///
