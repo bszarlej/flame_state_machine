@@ -1,6 +1,8 @@
 analyzer:
   errors:
     invalid_annotation_target: ignore
+  exclude:
+    - build/**
 include: package:flutter_lints/flutter.yaml
 
 linter:

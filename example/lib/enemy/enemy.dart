@@ -157,7 +157,7 @@ class Enemy extends SpriteAnimationGroupComponent<EnemyAnimation>
     sm = StateMachine(
       owner: this,
       initialState: idle,
-      onTransitionStart: (owner, from, to) => print(
+      onTransitionStart: (owner, from, to) => debugPrint(
         'State Transition [Enemy]: ${from.runtimeType} --> ${to.runtimeType}',
       ),
       transitions: [
