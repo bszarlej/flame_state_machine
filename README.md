@@ -177,14 +177,7 @@ For direct control, use changeState.
 
 A complete example project demonstrating `flame_state_machine` in a Flame game:
 
-[flame_state_machine_example](https://github.com/bszarlej/flame_state_machine_example)
-
-The example demonstrates:
-
-- Enemy "AI" using multiple states
-- Patrol, chase, combat, retreat, and death behaviors
-- Prioritized and global transitions
-- State-specific rendering and debug visualization
+[flame_state_machine_example](example/lib/main.dart)
 
 ## API
 

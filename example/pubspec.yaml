@@ -1,0 +1,34 @@
+name: flutter_state_machine_example
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0+1
+
+environment:
+  sdk: ^3.12.2
+
+dependencies:
+  flame: ^1.37.0
+  flame_camera_tools: ^5.0.2
+  flame_state_machine: ^3.0.0
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/images/orc/
+
+  fonts:
+    - family: PixelifySans
+      fonts:
+        - asset: assets/fonts/PixelifySans-VariableFont_wght.ttf
+    - family: PixelOperator
+      fonts:
+        - asset: assets/fonts/PixelOperator.ttf
